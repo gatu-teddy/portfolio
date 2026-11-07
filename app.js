@@ -15,8 +15,8 @@ const DATA = {
   ],
 
   stats: {
-    shipped: 3, goal: 4,
-    yearsExp: 3, clients: 38,
+    shipped: 5, goal: 8,
+    yearsExp: 3, clients: 40,
   },
 
   // Monthly activity (commits) for the chart — last 12 months
@@ -80,6 +80,50 @@ const DATA = {
       live: "#",
       code: "https://github.com/gatu-teddy/fuselage-mods",
     },
+    {
+      name: "Fuselage",
+      category: "Marketplace",
+      status: "progress",
+      when: "In development",
+      color: "#E84545",
+      summary: "Full car marketplace with escrow for cross-border vehicle exports. Buyer and seller flows, admin dashboard, and a secure escrow layer for high-value transactions. The expanded play — Fuselage Mods is the motorcycle vertical inside a larger platform.",
+      stack: ["Next.js", "TypeScript", "Supabase", "Tailwind"],
+      live: "#",
+      code: "https://github.com/gatu-teddy/fuselage",
+    },
+    {
+      name: "Content Engine",
+      category: "Automation · SaaS",
+      status: "shipped",
+      when: "Live — Sicail",
+      color: "#6366F1",
+      summary: "Multi-brand AI-powered content creation and publishing system for Sicail. Runs on n8n workflows with Claude for text and Nano Banana for image generation. Auto-publishes to X, Instagram, Facebook, LinkedIn, TikTok, and YouTube Shorts.",
+      stack: ["n8n", "React", "Claude API", "PostgreSQL", "Docker", "S3/R2"],
+      live: "#",
+      code: "https://github.com/gatu-teddy/content-engine",
+    },
+    {
+      name: "Premier Blueprint",
+      category: "Web Design",
+      status: "shipped",
+      when: "Dubai, 2026",
+      color: "#C9A84C",
+      summary: "Dubai real estate operating system. Premium dark-theme redesign — built for a high-end agency managing listings, leads, and agent workflows. Stripe/Linear quality tier visual design.",
+      stack: ["HTML", "CSS", "JavaScript", "Plus Jakarta Sans"],
+      live: "#",
+      code: "https://github.com/gatu-teddy/PremierBlueprintRedesign",
+    },
+    {
+      name: "The Nail DXB",
+      category: "Web Design",
+      status: "shipped",
+      when: "Dubai, 2026",
+      color: "#F472B6",
+      summary: "Redesign for a Dubai nail parlour. Clean, optimised single-page site with strong visual identity — built to perform on mobile where salon bookings happen.",
+      stack: ["HTML", "CSS", "JavaScript"],
+      live: "#",
+      code: "https://github.com/gatu-teddy/Thenaildxb-redesign",
+    },
   ],
 
   experience: [
@@ -129,7 +173,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 const VIEWS = {
-  projects:   { title: "Project Workspace", tabs: ["Overview", "Ed-tech", "Analytics", "Marketplace", "Automation · SaaS"] },
+  projects:   { title: "Project Workspace", tabs: ["Overview", "Ed-tech", "Analytics", "Marketplace", "Automation · SaaS", "Web Design"] },
   experience: { title: "Career Timeline",   tabs: ["Experience", "Education"] },
   skills:     { title: "Skill Insights",    tabs: ["Frontend", "Backend", "Tools"] },
 };
