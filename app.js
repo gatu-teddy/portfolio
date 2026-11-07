@@ -162,30 +162,31 @@ const DATA = {
 
   skills: {
     "Product": [
-      ["Zero-to-one builds", 94],
-      ["Roadmapping & prioritisation", 90],
-      ["B2B sales & go-to-market", 88],
-      ["Agile & sprint delivery (Jira)", 85],
-      ["User research & discovery", 84],
-      ["Metrics & analytics", 86],
-      ["Stakeholder management", 80],
+      "Zero-to-one builds",
+      "Roadmapping & prioritisation",
+      "B2B sales & go-to-market",
+      "Agile & sprint delivery",
+      "Jira",
+      "User research & discovery",
+      "Metrics & analytics",
+      "Stakeholder management",
     ],
     "Engineering": [
-      ["React / Next.js", 92],
-      ["CSS / Tailwind", 90],
-      ["Claude API & AI integration", 90],
-      ["TypeScript", 88],
-      ["n8n workflow automation", 86],
-      ["REST & webhook integrations", 84],
-      ["Supabase / PostgreSQL", 82],
-      ["Node.js", 80],
+      "React / Next.js",
+      "TypeScript",
+      "CSS / Tailwind",
+      "Claude API & AI integration",
+      "n8n workflow automation",
+      "REST & webhook integrations",
+      "Supabase / PostgreSQL",
+      "Node.js",
     ],
     "Design & Growth": [
-      ["UI/UX design", 82],
-      ["Figma", 76],
-      ["Conversion optimisation", 78],
-      ["SEO & content strategy", 72],
-      ["Brand & visual identity", 74],
+      "UI/UX design",
+      "Figma",
+      "Conversion optimisation",
+      "SEO & content strategy",
+      "Brand & visual identity",
     ],
   },
 };
@@ -363,9 +364,11 @@ function tableHTML(rows) {
 /* ---------- skills ---------- */
 function skillsHTML(group) {
   const list = DATA.skills[group] || [];
-  return `<div class="card lift" style="max-width:560px">
-    <h3>${esc(group)} proficiency</h3>
-    ${list.map(([n, v]) => `<div class="meter"><div class="meter-top"><span>${esc(n)}</span><span>${v}%</span></div><div class="bar"><span style="width:${v}%"></span></div></div>`).join("")}
+  return `<div class="card lift" style="max-width:640px">
+    <h3>${esc(group)}</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+      ${list.map((n) => `<span class="tag" style="font-size:13px;padding:7px 14px">${esc(n)}</span>`).join("")}
+    </div>
   </div>`;
 }
 
