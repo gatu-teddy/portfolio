@@ -9,14 +9,14 @@ const DATA = {
   subline: "Sounds too good to be true? Take a look around.",
   resumeUrl: "#",
   links: [
-    { label: "Email me", href: "mailto:you@example.com", primary: true },
+    { label: "Email me", href: "mailto:gatuteddy@gmail.com", primary: true },
     { label: "GitHub", href: "https://github.com/gatu-teddy" },
     { label: "LinkedIn", href: "https://www.linkedin.com/" },
   ],
 
   stats: {
-    shipped: 14, goal: 20,
-    yearsExp: 4, clients: 9,
+    shipped: 3, goal: 4,
+    yearsExp: 3, clients: 38,
   },
 
   // Monthly activity (commits) for the chart — last 12 months
@@ -37,48 +37,80 @@ const DATA = {
 
   projects: [
     {
-      name: "Fuselage Mods", category: "Web", status: "progress", when: "Ongoing",
-      color: "#e9c46a",
-      summary: "A Next.js + Supabase platform for showcasing and managing vehicle mod builds, with video metadata and responsive navigation.",
+      name: "Tutorii",
+      category: "Ed-tech",
+      status: "shipped",
+      when: "Live — 1,000+ users",
+      color: "#3B82F6",
+      summary: "B2B tutoring platform built zero-to-one. Closed three enterprise clients through direct outreach and grew to over 1,000 active users. Full product ownership — discovery, build, and go-to-market.",
+      stack: ["Next.js", "TypeScript", "Supabase", "Claude API", "Tailwind"],
+      live: "#",
+      code: "https://github.com/gatu-teddy/tutoriiNew",
+    },
+    {
+      name: "Fyn",
+      category: "Automation · SaaS",
+      status: "shipped",
+      when: "Live — 100k sites",
+      color: "#22C55E",
+      summary: "Automated website builder at scale. Built the pipeline that generated 100,000 business websites for 35 enrolled companies. FynChat handles ongoing client communication across all accounts automatically.",
+      stack: ["Next.js", "Node.js", "Automation", "Claude API", "Supabase"],
+      live: "#",
+      code: "#",
+    },
+    {
+      name: "JobPeak",
+      category: "Analytics",
+      status: "progress",
+      when: "Live — growing traffic",
+      color: "#8B5CF6",
+      summary: "Job market analytics platform giving candidates and recruiters real-time insight into hiring trends, role demand, and salary signals across industries and locations.",
+      stack: ["React", "Node.js", "PostgreSQL", "AI matching"],
+      live: "#",
+      code: "https://github.com/gatu-teddy/wira",
+    },
+    {
+      name: "Fuselage Mods",
+      category: "Marketplace",
+      status: "progress",
+      when: "In development",
+      color: "#F59E0B",
+      summary: "Marketplace for JDM motorcycle parts and modifications. Purpose-built for the specific-model seeker — no generic inventory, no guesswork. The right part, for the right bike.",
       stack: ["Next.js", "TypeScript", "Supabase", "Tailwind", "Framer Motion"],
-      live: "#", code: "#",
-    },
-    {
-      name: "Agency Dashboard", category: "Web", status: "progress", when: "Due in 3 weeks",
-      color: "#c9b8f5",
-      summary: "Client, project and finance management in one place — budgets, timesheets and kanban boards.",
-      stack: ["React", "Node", "PostgreSQL"], live: "#", code: "#",
-    },
-    {
-      name: "Rider Companion App", category: "Mobile", status: "progress", when: "Beta",
-      color: "#f4a261",
-      summary: "Cross-platform mobile app for trip logging and offline maps.",
-      stack: ["React Native", "Expo", "SQLite"], live: "#", code: "#",
-    },
-    {
-      name: "Payments Integration Kit", category: "Open Source", status: "shipped", when: "Jun 2026",
-      color: "#2a9d8f",
-      summary: "Typed SDK and webhook helpers for mobile money payments.",
-      stack: ["TypeScript", "Node"], live: "#", code: "#",
-    },
-    {
-      name: "Restaurant Ordering PWA", category: "Web", status: "shipped", when: "Mar 2026",
-      color: "#e76f51",
-      summary: "Installable ordering app with live kitchen queue and receipts.",
-      stack: ["Vue", "Firebase"], live: "#", code: "#",
-    },
-    {
-      name: "Design Tokens CLI", category: "Open Source", status: "shipped", when: "Jan 2026",
-      color: "#264653",
-      summary: "Generates CSS/Tailwind themes from a single tokens file.",
-      stack: ["Node", "CLI"], live: "#", code: "#",
+      live: "#",
+      code: "https://github.com/gatu-teddy/fuselage-mods",
     },
   ],
 
   experience: [
-    { role: "Full-stack Developer", org: "Freelance", period: "2024 — Now", tags: ["Next.js", "Supabase", "Product design"], note: "Building web apps end-to-end for small businesses and agencies." },
-    { role: "Frontend Engineer", org: "Studio Co.", period: "2022 — 2024", tags: ["React", "Design systems"], note: "Led the component library and shipped 6 client dashboards." },
-    { role: "Software Intern", org: "Tech Hub", period: "2021 — 2022", tags: ["Python", "APIs"], note: "Built internal tooling and REST integrations." },
+    {
+      role: "Product Manager & Developer",
+      org: "Fyn",
+      period: "2025 — Now",
+      tags: ["Automation", "Next.js", "Claude API", "Scale"],
+      note: "Built the automation pipeline generating 100,000+ business websites for 35 enrolled companies. FynChat handles client communication at scale.",
+    },
+    {
+      role: "Founder & Product Manager",
+      org: "Tutorii",
+      period: "2024 — 2025",
+      tags: ["Ed-tech", "B2B", "Zero-to-one", "Claude API"],
+      note: "Zero-to-one B2B tutoring platform. Closed 3 enterprise clients, grew to 1,000+ active users through direct sales and product-led growth.",
+    },
+    {
+      role: "Full-stack Developer",
+      org: "JobPeak",
+      period: "2025",
+      tags: ["Analytics", "AI matching", "React", "Node.js"],
+      note: "Job market analytics platform with AI-powered role matching and real-time hiring trend insights.",
+    },
+    {
+      role: "Full-stack Developer",
+      org: "Fuselage Mods",
+      period: "2026 — Now",
+      tags: ["Marketplace", "JDM", "Next.js", "Supabase"],
+      note: "Building a JDM motorcycle parts marketplace for specific-model buyers. Currently in active development.",
+    },
   ],
   education: [
     { role: "BSc Computer Science", org: "University", period: "2018 — 2022", tags: ["Algorithms", "HCI"], note: "Final project: offline-first field data app." },
@@ -97,7 +129,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 const VIEWS = {
-  projects:   { title: "Project Workspace", tabs: ["Overview", "Web", "Mobile", "Open Source"] },
+  projects:   { title: "Project Workspace", tabs: ["Overview", "Ed-tech", "Analytics", "Marketplace", "Automation · SaaS"] },
   experience: { title: "Career Timeline",   tabs: ["Experience", "Education"] },
   skills:     { title: "Skill Insights",    tabs: ["Frontend", "Backend", "Tools"] },
 };
@@ -166,7 +198,7 @@ function overviewHTML() {
         <div class="card">
           <h3>At a glance</h3>
           <div class="kv"><span>Years experience</span><b>${s.yearsExp}</b></div>
-          <div class="kv"><span>Happy clients</span><b>${s.clients}</b></div>
+          <div class="kv"><span>Clients &amp; businesses</span><b>${s.clients}</b></div>
           <div class="kv"><span>Commits (12 mo)</span><b>${total.toLocaleString()}</b></div>
         </div>
       </div>
