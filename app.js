@@ -161,9 +161,29 @@ const DATA = {
   ],
 
   skills: {
-    Frontend: [["React / Next.js", 92], ["TypeScript", 88], ["CSS / Tailwind", 90], ["Motion & interaction", 78]],
-    Backend:  [["Node.js", 84], ["PostgreSQL / Supabase", 80], ["REST & GraphQL", 78], ["Auth & security", 70]],
-    Tools:    [["Git & CI", 86], ["Figma", 75], ["Testing", 72], ["Cloud deploys", 76]],
+    "Product": [
+      ["Zero-to-one builds", 94],
+      ["Roadmapping & prioritisation", 90],
+      ["B2B sales & go-to-market", 88],
+      ["User research & discovery", 84],
+      ["Metrics & analytics", 86],
+      ["Stakeholder management", 80],
+    ],
+    "Engineering": [
+      ["React / Next.js", 92],
+      ["TypeScript", 88],
+      ["Supabase / PostgreSQL", 82],
+      ["AI & automation (Claude, n8n)", 88],
+      ["Node.js & REST APIs", 80],
+      ["CSS / Tailwind", 90],
+    ],
+    "Design & Growth": [
+      ["UI/UX design", 82],
+      ["Figma", 76],
+      ["Conversion optimisation", 78],
+      ["SEO & content strategy", 72],
+      ["Brand & visual identity", 74],
+    ],
   },
 };
 
@@ -175,7 +195,7 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const VIEWS = {
   projects:   { title: "Project Workspace", tabs: ["Overview", "Ed-tech", "Analytics", "Marketplace", "Automation · SaaS", "Web Design"] },
   experience: { title: "Career Timeline",   tabs: ["Experience", "Education"] },
-  skills:     { title: "Skill Insights",    tabs: ["Frontend", "Backend", "Tools"] },
+  skills:     { title: "Skill Insights",    tabs: ["Product", "Engineering", "Design & Growth"] },
 };
 let state = { view: "projects", tab: "Overview" };
 
