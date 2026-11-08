@@ -119,7 +119,7 @@ const DATA = {
       status: "shipped",
       when: "Dubai, 2026",
       color: "#F472B6",
-      summary: "Redesign for a Dubai nail parlour. Clean, optimised single-page site with strong visual identity — built to perform on mobile where salon bookings happen.",
+      summary: "Booking web app for a Dubai nail and beauty spa. Clients browse the catalogue and book appointments before visiting; a calendar confirms the slot on both the client's device and the owner's, who then manually logs it on their end. Built around the constraint that the business had no backend booking system.",
       stack: ["HTML", "CSS", "JavaScript"],
       live: "#",
       code: "https://github.com/gatu-teddy/Thenaildxb-redesign",
