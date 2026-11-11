@@ -486,7 +486,7 @@ function initSkillBubbles() {
       fired = true;
       obs.disconnect();
       // small delay so user sees it happen
-      setTimeout(() => magnetPull(bubbles, target), 120);
+      setTimeout(() => magnetPull(bubbles, target), 5000);
     }
   }, { threshold: 0.35 });
   obs.observe(target);
