@@ -264,6 +264,13 @@ function render() {
   const { view, tab } = state;
   if (view === "projects") el.innerHTML = tab === "Overview" ? overviewHTML() : projectListHTML(tab);
   if (view === "experience") el.innerHTML = tableHTML(tab === "Education" ? DATA.education : DATA.experience);
+  // apply logo-only grid until layout splits
+  if (!document.querySelector(".stage.split") && view === "projects" && tab === "Overview") {
+    requestAnimationFrame(() => {
+      const g = document.querySelector(".gallery");
+      if (g) g.classList.add("logo-only");
+    });
+  }
 }
 
 /* ---------- projects ---------- */
@@ -437,7 +444,7 @@ initStatic();
 setView("projects");
 setSkillTab(skillTab);
 
-/* ---------- floating skill bubbles ---------- */
+/* ---------- floating skill bubbles + layout transition ---------- */
 function initSkillBubbles() {
   if (typeof gsap === "undefined") return;
 
@@ -455,19 +462,14 @@ function initSkillBubbles() {
     const el = document.createElement("span");
     el.className = "float-bubble";
     el.textContent = skill;
-    // scatter across full viewport
-    const lx = 2 + Math.random() * 90;
-    const ly = 2 + Math.random() * 90;
-    el.style.left = lx + "vw";
-    el.style.top  = ly + "vh";
+    el.style.left = (2 + Math.random() * 90) + "vw";
+    el.style.top  = (2 + Math.random() * 90) + "vh";
     layer.appendChild(el);
 
-    // random drift
-    const dx = (Math.random() - 0.5) * 70;
-    const dy = (Math.random() - 0.5) * 50;
     const dur = 3 + Math.random() * 4;
     const tween = gsap.to(el, {
-      x: dx, y: dy,
+      x: (Math.random() - 0.5) * 70,
+      y: (Math.random() - 0.5) * 50,
       duration: dur,
       delay: -Math.random() * dur,
       repeat: -1,
@@ -478,49 +480,69 @@ function initSkillBubbles() {
   });
 
   let fired = false;
-  const target = document.querySelector(".skills-window");
-  const hero   = document.querySelector(".hero");
-  if (!target || !hero) return;
+  const hero = document.querySelector(".hero");
+  if (!hero) return;
 
   const obs = new IntersectionObserver(([entry]) => {
-    // fire when hero fully scrolls out of view
     if (!entry.isIntersecting && !fired) {
       fired = true;
       obs.disconnect();
-      magnetPull(bubbles, target);
+      activateSplit(bubbles);
     }
   }, { threshold: 0 });
   obs.observe(hero);
 }
 
-function magnetPull(bubbles, target) {
-  const tr = target.getBoundingClientRect();
-  const tx = tr.left + tr.width  * 0.5;
-  const ty = tr.top  + tr.height * 0.5;
+function activateSplit(bubbles) {
+  const stage     = document.querySelector(".stage");
+  const skillsCol = document.querySelector(".stage-col.skills-col");
+  const skillsWin = document.querySelector(".skills-window");
 
-  bubbles.forEach(({ el, tween }) => {
-    tween.kill();
-    const br = el.getBoundingClientRect();
-    const cx = br.left + br.width  * 0.5;
-    const cy = br.top  + br.height * 0.5;
-    // animate relative to current transform by adding delta
-    gsap.to(el, {
-      x: "+=" + (tx - cx),
-      y: "+=" + (ty - cy),
-      scale: 0,
-      opacity: 0,
-      duration: 0.42,
-      ease: "power4.in",
-      onComplete: () => { el.remove(); },
+  // 1. show skills col invisible
+  skillsCol.style.opacity = "0";
+  skillsCol.style.transition = "opacity 0.5s ease";
+  stage.classList.add("split");
+
+  // 2. switch overview from logo-grid to full list
+  const gallery = document.querySelector(".gallery");
+  if (gallery) {
+    gallery.classList.remove("logo-only");
+    // re-render to get the full gallery animation
+    render();
+  }
+
+  // 3. fade skills col in after grid transitions (500ms)
+  setTimeout(() => {
+    skillsCol.style.opacity = "1";
+  }, 300);
+
+  // 4. pull bubbles into the skills window after it's visible
+  setTimeout(() => {
+    const target = skillsWin;
+    if (!target) return;
+    const tr = target.getBoundingClientRect();
+    const tx = tr.left + tr.width  * 0.5;
+    const ty = tr.top  + tr.height * 0.5;
+
+    bubbles.forEach(({ el, tween }) => {
+      tween.kill();
+      const br = el.getBoundingClientRect();
+      gsap.to(el, {
+        x: "+=" + (tx - (br.left + br.width  * 0.5)),
+        y: "+=" + (ty - (br.top  + br.height * 0.5)),
+        scale: 0,
+        opacity: 0,
+        duration: 0.42,
+        ease: "power4.in",
+        onComplete: () => el.remove(),
+      });
     });
-  });
 
-  // subtle pulse on skills card
-  gsap.fromTo(target,
-    { scale: 1 },
-    { scale: 1.025, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out", delay: 0.38 }
-  );
+    gsap.fromTo(target,
+      { scale: 1 },
+      { scale: 1.025, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out", delay: 0.38 }
+    );
+  }, 600);
 }
 
-// run after first paint so layout is settled
 requestAnimationFrame(initSkillBubbles);
