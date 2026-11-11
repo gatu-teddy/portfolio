@@ -264,7 +264,6 @@ function render() {
   const { view, tab } = state;
   if (view === "projects") el.innerHTML = tab === "Overview" ? overviewHTML() : projectListHTML(tab);
   if (view === "experience") el.innerHTML = tableHTML(tab === "Education" ? DATA.education : DATA.experience);
-  if (view === "projects" && tab === "Overview") drawChart();
 }
 
 /* ---------- projects ---------- */
@@ -277,41 +276,23 @@ function taskHTML(p) {
 }
 
 function overviewHTML() {
-  const s = DATA.stats;
-  const pct = Math.round((s.shipped / s.goal) * 100);
-  const total = DATA.activity.reduce((a, d) => a + d.commits, 0);
-  const inProg = DATA.projects.filter((p) => p.status === "progress");
-  const shipped = DATA.projects.filter((p) => p.status === "shipped");
-  return `
-  <div class="grid dash">
-    <div>
-      <div class="grid stats">
-        <div class="card lift">
-          <h3>Projects Shipped</h3>
-          <div class="big">${s.shipped}<small>of ${s.goal} goal</small></div>
-          <div class="bar"><span style="width:${pct}%"></span></div>
-          <div class="fine right">${s.goal - s.shipped} to go (${pct}%)</div>
+  return `<div class="gallery">
+    ${DATA.projects.map((p, i) => `
+      <button class="gallery-card" data-project="${i}">
+        <div class="gallery-thumb" style="background:${esc(p.color)}">
+          ${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" class="gallery-img">` : ""}
+          ${p.icon ? `<img src="${esc(p.icon)}" alt="" class="gallery-icon">` : ""}
         </div>
-        <div class="card">
-          <h3>At a glance</h3>
-          <div class="kv"><span>Years experience</span><b>${s.yearsExp}</b></div>
-          <div class="kv"><span>Clients &amp; businesses</span><b>${s.clients}</b></div>
-          <div class="kv"><span>Commits (12 mo)</span><b>${total.toLocaleString()}</b></div>
+        <div class="gallery-info">
+          <div class="gallery-row">
+            <span class="gallery-name">${esc(p.name)}</span>
+            <span class="pill ${p.status === "shipped" ? "mint" : "lav"}" style="font-size:11px;flex-shrink:0">${p.status === "shipped" ? "Shipped" : "In progress"}</span>
+          </div>
+          <div class="fine" style="margin:3px 0 7px">${esc(p.category)} · ${esc(p.when)}</div>
+          <div class="gallery-desc">${esc(p.summary.split('.')[0])}</div>
         </div>
-      </div>
-      <div class="card chart-card">
-        <div class="chart-head"><h3>Monthly commits</h3><span class="fine">Last 12 months</span></div>
-        <svg class="chart" id="chart" role="img" aria-label="Monthly commits over the last 12 months"></svg>
-        <div class="tooltip" id="tooltip"></div>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Project Board</h3>
-      <div class="board">
-        <div><div class="col-title"><span class="status-dot blue"></span>In Progress</div>${inProg.map(taskHTML).join("")}</div>
-        <div><div class="col-title"><span class="status-dot green"></span>Shipped</div>${shipped.map(taskHTML).join("")}</div>
-      </div>
-    </div>
+      </button>
+    `).join("")}
   </div>`;
 }
 
