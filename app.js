@@ -479,17 +479,18 @@ function initSkillBubbles() {
 
   let fired = false;
   const target = document.querySelector(".skills-window");
-  if (!target) return;
+  const hero   = document.querySelector(".hero");
+  if (!target || !hero) return;
 
   const obs = new IntersectionObserver(([entry]) => {
-    if (entry.isIntersecting && !fired) {
+    // fire when hero fully scrolls out of view
+    if (!entry.isIntersecting && !fired) {
       fired = true;
       obs.disconnect();
-      // small delay so user sees it happen
-      setTimeout(() => magnetPull(bubbles, target), 5000);
+      magnetPull(bubbles, target);
     }
-  }, { threshold: 0.35 });
-  obs.observe(target);
+  }, { threshold: 0 });
+  obs.observe(hero);
 }
 
 function magnetPull(bubbles, target) {
