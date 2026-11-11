@@ -42,6 +42,8 @@ const DATA = {
       status: "shipped",
       when: "Live — 1,000+ users",
       color: "#39FF14",
+      icon: "tutorii-icon.png",
+      logo: "tutorii-logo.webp",
       summary: "EdTech content platform with an AI tutor, quiz engine and WhatsApp notifications. Originally built to introduce UAE culture and practices to expats and overseas workers; made the product decision to reposition it as an onboarding tool for company L&D — it was then adopted by two visa agencies and a labour and hiring office. Full zero-to-one ownership: discovery, build, go-to-market, and pivot.",
       stack: ["Next.js", "TypeScript", "Supabase", "Claude API", "Twilio", "Tailwind"],
       live: "#",
@@ -270,7 +272,7 @@ function taskHTML(p) {
   const i = DATA.projects.indexOf(p);
   return `<button class="task" data-project="${i}">
     <div><div class="name">${esc(p.name)}</div><div class="who">${esc(p.category)} · ${esc(p.when)}</div></div>
-    <span class="thumb" style="background:${esc(p.color)}"></span>
+    <span class="thumb" style="background:${esc(p.color)}">${p.icon ? `<img src="${esc(p.icon)}" alt="" style="width:100%;height:100%;object-fit:contain;padding:3px;border-radius:inherit">` : ""}</span>
   </button>`;
 }
 
@@ -406,7 +408,10 @@ function setSkillTab(group) {
 /* ---------- drawer ---------- */
 function openDrawer(p) {
   $("#drawer-content").innerHTML = `
-    <span class="thumb" style="display:inline-block;width:40px;height:40px;border-radius:10px;background:${esc(p.color)}"></span>
+    ${p.logo
+      ? `<div class="drawer-logo-wrap" style="background:${esc(p.color)}"><img src="${esc(p.logo)}" alt="${esc(p.name)} logo" class="drawer-logo"></div>`
+      : `<span class="thumb" style="display:inline-block;width:40px;height:40px;border-radius:10px;background:${esc(p.color)}"></span>`
+    }
     <h3 id="drawer-title">${esc(p.name)}</h3>
     <div class="meta-row" style="margin:6px 0 10px">
       <span class="pill ${p.status === "shipped" ? "mint" : "lav"}">${p.status === "shipped" ? "Shipped" : "In progress"}</span>
