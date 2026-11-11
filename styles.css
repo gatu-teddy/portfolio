@@ -69,7 +69,22 @@ button { font: inherit; cursor: pointer; }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 
 /* ---------- app window ---------- */
-.stage { max-width: 1120px; margin: 0 auto; padding: 0 24px 80px; }
+.stage {
+  max-width: 1240px; margin: 0 auto; padding: 8px 24px 80px;
+  display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  gap: 20px; align-items: stretch; scroll-margin-top: 24px;
+}
+.stage-col { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.stage-col > .segmented { margin: 0 0 20px; }
+.stage-col > .app-window { width: 100%; flex: 1; }
+.segmented.solo span {
+  display: block; padding: 10px 18px; border-radius: 9px;
+  background: var(--ink); color: #fff; font-size: 14px; font-weight: 500;
+}
+.skills-window { grid-template-columns: minmax(0, 1fr); }
+.skills-window .app-body { display: flex; flex-direction: column; }
+.skills-window .view { flex: 1; }
+.skills-lede { margin: 6px 0 18px; }
 .app-window {
   display: grid; grid-template-columns: 56px minmax(0, 1fr);
   background: var(--surface); border-radius: 18px; box-shadow: var(--shadow);
@@ -158,6 +173,8 @@ button { font: inherit; cursor: pointer; }
 .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--mint); color: var(--ink-2); margin: 2px 4px 0 0; }
 
 /* ---------- skills ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.chip { font-size: 13px; padding: 7px 14px; margin: 0; }
 .meter { margin-bottom: 14px; }
 .meter-top { display: flex; justify-content: space-between; font-size: 13px; }
 .meter-top span:last-child { color: var(--muted); }
@@ -189,6 +206,10 @@ button { font: inherit; cursor: pointer; }
 .drawer .links { display: flex; gap: 8px; margin-top: 20px; }
 
 /* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .stage-col > .app-window { min-height: 0; }
+}
 @media (max-width: 860px) {
   .grid.dash { grid-template-columns: minmax(0, 1fr); }
   .topnav a:not(.icon-btn) { display: none; }

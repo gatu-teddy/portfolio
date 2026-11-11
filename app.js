@@ -226,8 +226,9 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const VIEWS = {
   projects:   { title: "Project Workspace", tabs: ["Overview", "Ed-tech", "Analytics", "Marketplace", "Automation · SaaS", "Web Design"] },
   experience: { title: "Career Timeline",   tabs: ["Experience", "Education"] },
-  skills:     { title: "Skill Insights",    tabs: ["Product", "Engineering", "Tools & Platforms"] },
 };
+const SKILL_TABS = Object.keys(DATA.skills);
+let skillTab = SKILL_TABS[0];
 let state = { view: "projects", tab: "Overview" };
 
 /* ---------- static bits ---------- */
@@ -261,7 +262,6 @@ function render() {
   const { view, tab } = state;
   if (view === "projects") el.innerHTML = tab === "Overview" ? overviewHTML() : projectListHTML(tab);
   if (view === "experience") el.innerHTML = tableHTML(tab === "Education" ? DATA.education : DATA.experience);
-  if (view === "skills") el.innerHTML = skillsHTML(tab);
   if (view === "projects" && tab === "Overview") drawChart();
 }
 
@@ -388,14 +388,18 @@ function tableHTML(rows) {
     </tr>`).join("")}</tbody></table></div>`;
 }
 
-/* ---------- skills ---------- */
-function skillsHTML(group) {
+/* ---------- skills (right-hand card) ---------- */
+function setSkillTab(group) {
+  skillTab = group;
+  $("#skill-tabs").innerHTML = SKILL_TABS
+    .map((t) => `<button role="tab" aria-selected="${t === group}" class="${t === group ? "active" : ""}" data-skill="${esc(t)}">${esc(t)}</button>`)
+    .join("");
+  const el = $("#skills-view");
+  el.style.animation = "none"; void el.offsetWidth; el.style.animation = "";
   const list = DATA.skills[group] || [];
-  return `<div class="card lift" style="max-width:640px">
-    <h3>${esc(group)}</h3>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
-      ${list.map((n) => `<span class="tag" style="font-size:13px;padding:7px 14px">${esc(n)}</span>`).join("")}
-    </div>
+  el.innerHTML = `<div class="card lift">
+    <h3>${esc(group)} <span class="fine">· ${list.length}</span></h3>
+    <div class="chips">${list.map((n) => `<span class="tag chip">${esc(n)}</span>`).join("")}</div>
   </div>`;
 }
 
@@ -427,8 +431,10 @@ function closeDrawer() {
 
 /* ---------- events ---------- */
 document.addEventListener("click", (e) => {
-  const seg = e.target.closest(".segmented button");
+  const seg = e.target.closest(".segmented button[data-view]");
   if (seg) return setView(seg.dataset.view);
+  const sk = e.target.closest("[data-skill]");
+  if (sk) return setSkillTab(sk.dataset.skill);
   const sub = e.target.closest("#subtabs button");
   if (sub) return setView(state.view, sub.dataset.tab);
   const task = e.target.closest("[data-project]");
@@ -444,3 +450,4 @@ window.addEventListener("resize", () => {
 
 initStatic();
 setView("projects");
+setSkillTab(skillTab);

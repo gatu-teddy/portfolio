@@ -26,15 +26,14 @@
     <section class="hero">
       <h1 id="headline"></h1>
       <p class="sub" id="subline"></p>
-
-      <div class="segmented" role="tablist" aria-label="Portfolio sections" id="work">
-        <button role="tab" aria-selected="true"  data-view="projects">Projects</button>
-        <button role="tab" aria-selected="false" data-view="experience">Experience</button>
-        <button role="tab" aria-selected="false" data-view="skills">Skills</button>
-      </div>
     </section>
 
-    <section class="stage">
+    <section class="stage" id="work">
+      <div class="stage-col">
+      <div class="segmented" role="tablist" aria-label="Portfolio sections">
+        <button role="tab" aria-selected="true"  data-view="projects">Projects</button>
+        <button role="tab" aria-selected="false" data-view="experience">Experience</button>
+      </div>
       <div class="app-window">
         <aside class="rail" aria-hidden="true">
           <span class="rail-icon active"></span><span class="rail-icon"></span><span class="rail-icon"></span><span class="rail-icon"></span>
@@ -51,6 +50,21 @@
             <div class="subtabs" id="subtabs"></div>
           </div>
           <div id="view" class="view"></div>
+        </div>
+      </div>
+      </div>
+
+      <div class="stage-col">
+        <div class="segmented solo"><span>Skills</span></div>
+        <div class="app-window skills-window">
+          <div class="app-body">
+            <div class="app-head">
+              <h2>Skill Insights</h2>
+              <p class="fine skills-lede">What I bring to a team, grouped by discipline.</p>
+              <div class="subtabs" id="skill-tabs" role="tablist" aria-label="Skill groups"></div>
+            </div>
+            <div id="skills-view" class="view"></div>
+          </div>
         </div>
       </div>
     </section>
