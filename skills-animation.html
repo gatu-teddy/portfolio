@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skills Animation — Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f1f0ee;
+  --surface: #fff;
+  --accent: #3f9a2f;
+  --mint: #dff1dc;
+  --ink: #111;
+  --ink-2: #4a4a48;
+  --muted: #8e8e8a;
+  --line: #ecebe8;
+  --shadow: 0 2px 4px rgba(0,0,0,.04), 0 10px 30px rgba(0,0,0,.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  font-family: "Onest", system-ui, sans-serif;
+  overflow: hidden;
+}
+
+/* ── scene ── */
+#scene {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ── floor ── */
+#floor {
+  position: absolute;
+  bottom: 90px;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--line) 10%, var(--line) 90%, transparent 100%);
+}
+#floor-shadow {
+  position: absolute;
+  bottom: 86px;
+  left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(to bottom, rgba(0,0,0,.04), transparent);
+}
+
+/* ── scattered bubbles ── */
+.bubble {
+  position: absolute;
+  padding: 7px 15px;
+  border-radius: 999px;
+  background: var(--mint);
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(63,154,47,.15);
+  transform-origin: center center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ── character wrap ── */
+#char-wrap {
+  position: absolute;
+  bottom: 92px;
+  left: 0;
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+/* ── walking legs (CSS keyframe driven) ── */
+#leg-l { transform-origin: 3px 0; }
+#leg-r { transform-origin: 3px 0; }
+#arm-swing { transform-origin: 0 0; }
+
+.walking #leg-l { animation: walk-l .45s ease-in-out infinite alternate; }
+.walking #leg-r { animation: walk-r .45s ease-in-out infinite alternate; }
+.walking #body-group { animation: bob .45s ease-in-out infinite alternate; }
+.walking #arm-swing { animation: arm-sw .45s ease-in-out infinite alternate; }
+
+@keyframes walk-l { from { transform: rotate(-28deg); } to { transform: rotate(28deg); } }
+@keyframes walk-r { from { transform: rotate(28deg); } to { transform: rotate(-28deg); } }
+@keyframes bob    { from { transform: translateY(0px); } to { transform: translateY(-3px); } }
+@keyframes arm-sw { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
+
+/* dump tilt */
+.dumping #char-wrap { animation: dump .6s ease-in-out; }
+@keyframes dump {
+  0%   { transform: rotate(0deg); }
+  40%  { transform: rotate(-25deg); }
+  70%  { transform: rotate(5deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* wave */
+.waving #arm-wave { animation: wave .4s ease-in-out 3 alternate; }
+@keyframes wave { from { transform: rotate(0deg); } to { transform: rotate(-60deg); } }
+
+/* ── skills card (right side) ── */
+#skills-card {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 310px;
+  background: var(--surface);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 24px 22px 28px;
+  min-height: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+#skills-card::-webkit-scrollbar { display: none; }
+
+#skills-card h2 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#skills-card h2 .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+}
+
+.skill-group { margin-bottom: 18px; }
+.skill-group h3 {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: 10px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--mint);
+  color: var(--ink-2);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-16px) scale(.9);
+  will-change: transform, opacity;
+}
+
+/* ── bag count label ── */
+#bag-count {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  border-radius: 999px;
+  padding: 1px 5px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* ── progress hint ── */
+#hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--muted);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+}
+</style>
+</head>
+<body>
+<div id="scene">
+  <div id="floor"></div>
+  <div id="floor-shadow"></div>
+
+  <!-- Character -->
+  <div id="char-wrap">
+    <svg id="guy" viewBox="-18 -58 36 68" width="44" height="72">
+      <!-- bag (grows as skills collected) -->
+      <g id="bag-group">
+        <circle id="bag-body" cx="16" cy="-4" r="0" fill="#f0c040"/>
+        <line id="bag-string" x1="9" y1="-14" x2="16" y2="-9" stroke="#c09030" stroke-width="1.5" stroke-linecap="round" opacity="0"/>
+      </g>
+      <!-- body group (bobs during walk) -->
+      <g id="body-group">
+        <!-- torso -->
+        <rect x="-8" y="-22" width="16" height="20" rx="5" fill="#3f9a2f"/>
+        <!-- head -->
+        <circle cx="0" cy="-33" r="11" fill="#f9c89a"/>
+        <!-- hair -->
+        <path d="M -11 -37 Q -5 -48 0 -46 Q 5 -48 11 -37" fill="#3d2515" stroke="none"/>
+        <!-- left eye -->
+        <circle cx="-4" cy="-34" r="1.8" fill="#222"/>
+        <!-- right eye -->
+        <circle cx="4" cy="-34" r="1.8" fill="#222"/>
+        <!-- smile -->
+        <path id="mouth" d="M -4 -28 Q 0 -25.5 4 -28" stroke="#c08060" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+        <!-- right arm (static, holds bag) -->
+        <line x1="8" y1="-16" x2="16" y2="-9" stroke="#f9c89a" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- left arm (swings during walk) -->
+        <line id="arm-swing" x1="-8" y1="-16" x2="-16" y2="-9" stroke="#f9c89a" stroke-width="3.5" stroke-linecap="round" transform-origin="-8 -16"/>
+        <!-- wave arm (hidden by default) -->
+        <line id="arm-wave" x1="-8" y1="-16" x2="-16" y2="-28" stroke="#f9c89a" stroke-width="3.5" stroke-linecap="round" transform-origin="-8 -16" opacity="0"/>
+      </g>
+      <!-- legs -->
+      <rect id="leg-l" x="-7" y="-2" width="6" height="18" rx="3" fill="#2a6b1a"/>
+      <rect id="leg-r" x="1"  y="-2" width="6" height="18" rx="3" fill="#2a6b1a"/>
+    </svg>
+    <div id="bag-count"></div>
+  </div>
+
+  <!-- Skills card (right) -->
+  <div id="skills-card">
+    <h2><span class="dot"></span>Skill Insights</h2>
+    <div id="card-content"></div>
+  </div>
+
+  <div id="hint">collecting skills…</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+/* ─────────────────────────────────────────────
+   DATA
+───────────────────────────────────────────── */
+const SKILLS = {
+  "Product": [
+    "Product Management","Product Ownership","Roadmapping","Backlog Management",
+    "User Stories & ACs","Business Analysis","Requirements Gathering",
+    "Competitive Analysis","Agile · Scrum · Kanban","Stakeholder Management",
+    "UI/UX Collaboration","Release Coordination","Technical PM",
+    "Zero-to-one builds","B2B go-to-market"
+  ],
+  "Engineering": [
+    "Solution Architecture","React.js / Next.js","TypeScript","Supabase / PostgreSQL",
+    "Claude API & AI","n8n automation","REST & webhooks",
+    "Twilio / WhatsApp API","AWS SES","Vercel · Railway · R2",
+    "SDLC · Testing","Git / GitHub"
+  ],
+  "Tools": [
+    "Jira","Notion","Slack","Figma","Framer",
+    "Memberstack","Meta Business API","Claude Code"
+  ]
+};
+
+/* ─────────────────────────────────────────────
+   SETUP
+───────────────────────────────────────────── */
+const scene      = document.getElementById('scene');
+const charWrap   = document.getElementById('char-wrap');
+const bagBody    = document.getElementById('bag-body');
+const bagString  = document.getElementById('bag-string');
+const bagCount   = document.getElementById('bag-count');
+const hint       = document.getElementById('hint');
+const armWave    = document.getElementById('arm-wave');
+const mouth      = document.getElementById('mouth');
+
+const W = window.innerWidth;
+const H = window.innerHeight;
+const FLOOR_Y = H - 92;          // bottom of char-wrap
+const CARD_LEFT = W - 48 - 310;  // left edge of skills card
+
+let charX = -60;      // current left of char-wrap
+let bagR  = 0;        // current bag radius
+let collected = 0;
+const totalSkills = Object.values(SKILLS).flat().length;
+
+/* ─────────────────────────────────────────────
+   SCATTER BUBBLES
+───────────────────────────────────────────── */
+const allSkills = Object.entries(SKILLS).flatMap(([g, arr]) =>
+  arr.map(name => ({ name, group: g }))
+);
+
+// shuffle
+for (let i = allSkills.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [allSkills[i], allSkills[j]] = [allSkills[j], allSkills[i]];
+}
+
+const bubbles = allSkills.map(skill => {
+  const el = document.createElement('span');
+  el.className = 'bubble';
+  el.textContent = skill.name;
+
+  // random position: scatter left of the card, above floor
+  const maxX = CARD_LEFT - 20;
+  const bx = 30 + Math.random() * Math.max(100, maxX - 80);
+  const by = FLOOR_Y - 24 - Math.random() * (H * 0.52);
+
+  gsap.set(el, { x: bx, y: by, opacity: 0, scale: 0 });
+  scene.appendChild(el);
+  return { el, bx, by };
+});
+
+/* ─────────────────────────────────────────────
+   CHARACTER HELPERS
+───────────────────────────────────────────── */
+function setCharPos(x) {
+  charX = x;
+  gsap.set(charWrap, { x });
+}
+
+function walkTo(targetX) {
+  const dist = Math.abs(targetX - charX);
+  if (dist < 2) return Promise.resolve();
+  const dur = Math.max(0.25, dist / 420);
+  const dir = targetX > charX ? 1 : -1;
+
+  charWrap.classList.add('walking');
+  gsap.set('#guy', { scaleX: dir }); // face direction
+
+  return new Promise(resolve => {
+    gsap.to(charWrap, {
+      x: targetX, duration: dur, ease: 'none',
+      onUpdate() { charX = gsap.getProperty(charWrap, 'x'); },
+      onComplete() {
+        charX = targetX;
+        charWrap.classList.remove('walking');
+        resolve();
+      }
+    });
+  });
+}
+
+function growBag() {
+  bagR = Math.min(bagR + 1.3, 20);
+  gsap.to(bagBody, { attr: { r: bagR }, duration: 0.12, ease: 'back.out' });
+  if (bagR > 1) {
+    gsap.to(bagString, { opacity: 1, duration: 0.1 });
+    // show count label
+    gsap.set(bagCount, {
+      left: charX + 44 + bagR,
+      top: FLOOR_Y - 4 - bagR,
+      opacity: 1
+    });
+    bagCount.textContent = collected;
+  }
+}
+
+function vacuum(bubble) {
+  return new Promise(resolve => {
+    // target: bag position on character
+    const bagScreenX = charX + 44 + bagR;
+    const bagScreenY = FLOOR_Y - 4 - bagR;
+
+    gsap.to(bubble.el, {
+      x: bagScreenX - bubble.bx,
+      y: bagScreenY - bubble.by,
+      scale: 0,
+      opacity: 0,
+      duration: 0.32,
+      ease: 'back.in(1.8)',
+      onComplete() {
+        bubble.el.style.display = 'none';
+        collected++;
+        growBag();
+        // update hint
+        hint.textContent = `${collected} / ${totalSkills} collected`;
+        resolve();
+      }
+    });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   BUILD CARD CONTENT
+───────────────────────────────────────────── */
+function buildCard() {
+  const content = document.getElementById('card-content');
+  content.innerHTML = '';
+  Object.entries(SKILLS).forEach(([group, chips]) => {
+    const g = document.createElement('div');
+    g.className = 'skill-group';
+    g.innerHTML = `<h3>${group}</h3><div class="chips">${
+      chips.map(c => `<span class="chip">${c}</span>`).join('')
+    }</div>`;
+    content.appendChild(g);
+  });
+}
+
+/* ─────────────────────────────────────────────
+   MAIN SEQUENCE
+───────────────────────────────────────────── */
+async function run() {
+  // 1 ── bubbles pop into existence
+  await sleep(400);
+  await new Promise(r =>
+    gsap.to('.bubble', {
+      opacity: 1, scale: 1,
+      duration: 0.5,
+      stagger: { amount: 1.8, from: 'random' },
+      ease: 'back.out(2)',
+      onComplete: r
+    })
+  );
+
+  // 2 ── character walks in
+  await sleep(300);
+  gsap.to(hint, { opacity: 1, duration: 0.4 });
+  hint.textContent = 'collecting skills…';
+  await walkTo(80);
+
+  // 3 ── collect — sweep left to right
+  const sorted = [...bubbles].sort((a, b) => a.bx - b.bx);
+
+  // group nearby bubbles so character doesn't zigzag too much
+  for (const b of sorted) {
+    // walk close to bubble (stop slightly left)
+    await walkTo(b.bx - 14);
+    await vacuum(b);
+    await sleep(55);
+  }
+
+  // 4 ── walk to card
+  await sleep(250);
+  hint.textContent = 'delivering to skills card…';
+  const dumpX = CARD_LEFT - 55;
+  await walkTo(dumpX);
+  await sleep(150);
+
+  // 5 ── dump pose: tilt character
+  gsap.to(charWrap, {
+    rotate: -20, transformOrigin: 'bottom center',
+    duration: 0.4, ease: 'back.out(1.5)',
+    yoyo: true, repeat: 1
+  });
+  await sleep(400);
+
+  // 6 ── bag empties
+  gsap.to(bagBody, { attr: { r: 0 }, duration: 0.4, ease: 'back.in' });
+  gsap.to(bagString, { opacity: 0, duration: 0.3 });
+  gsap.to(bagCount,  { opacity: 0, duration: 0.2 });
+
+  // 7 ── chips fall into card
+  buildCard();
+  await sleep(100);
+  await new Promise(r =>
+    gsap.to('.chip', {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.38,
+      stagger: { amount: 1.4, ease: 'power1.in' },
+      ease: 'back.out(2.5)',
+      onComplete: r
+    })
+  );
+
+  // 8 ── character waves
+  await sleep(200);
+  gsap.set('#guy', { scaleX: -1 }); // face card
+  gsap.set(armWave, { opacity: 1 });
+  charWrap.classList.add('waving');
+  // big smile
+  gsap.to(mouth, {
+    attr: { d: 'M -5 -28 Q 0 -23 5 -28' },
+    duration: 0.3
+  });
+
+  // hint done
+  hint.textContent = '✓ all skills delivered';
+  await sleep(2200);
+  charWrap.classList.remove('waving');
+  gsap.set(armWave, { opacity: 0 });
+
+  // 9 ── fade hint
+  await sleep(600);
+  gsap.to(hint, { opacity: 0, duration: 0.6 });
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// kick off
+setCharPos(-60);
+run();
+</script>
+</body>
+</html>
