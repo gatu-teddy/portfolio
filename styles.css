@@ -84,7 +84,7 @@ button { font: inherit; cursor: pointer; }
 .skills-window { grid-template-columns: minmax(0, 1fr); }
 .skills-window .app-body { display: flex; flex-direction: column; }
 .skills-window .view { flex: 1; }
-.skills-lede { margin: 6px 0 18px; }
+.skills-lede { display: none; }
 .app-window {
   display: grid; grid-template-columns: 56px minmax(0, 1fr);
   background: var(--surface); border-radius: 18px; box-shadow: var(--shadow);
@@ -95,7 +95,7 @@ button { font: inherit; cursor: pointer; }
 .rail-icon.active { border-color: var(--accent); background: var(--accent-soft); }
 .app-body { min-width: 0; }
 .app-head { padding: 24px 28px 0; border-bottom: 1px solid var(--line); }
-.app-head h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.app-head h2 { margin: 0; font-size: 18px; font-weight: 600; white-space: nowrap; }
 .meta-row { display: flex; align-items: center; gap: 8px; margin: 14px 0 18px; flex-wrap: wrap; }
 .avatar {
   width: 28px; height: 28px; border-radius: 8px; background: var(--ink); color: #fff;
@@ -170,7 +170,7 @@ button { font: inherit; cursor: pointer; }
 .table th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 0 12px 10px; }
 .table td { padding: 14px 12px; border-top: 1px solid var(--line); vertical-align: top; }
 .table td:first-child { font-weight: 500; }
-.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--mint); color: var(--ink-2); margin: 2px 4px 0 0; }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--mint); color: var(--ink-2); margin: 2px 4px 0 0; white-space: nowrap; }
 
 /* ---------- skills ---------- */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
