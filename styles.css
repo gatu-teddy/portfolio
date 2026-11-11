@@ -151,33 +151,28 @@ button { font: inherit; cursor: pointer; }
 .tooltip .t-row { display: flex; justify-content: space-between; gap: 12px; }
 
 /* ---------- project gallery (overview) ---------- */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-}
+.gallery { display: flex; flex-direction: column; gap: 8px; }
 .gallery-card {
-  text-align: left; border: 1px solid var(--line); border-radius: 14px;
-  background: var(--surface); overflow: hidden; cursor: pointer; padding: 0;
+  width: 100%; height: 72px;
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--surface); cursor: pointer; text-align: left; overflow: hidden;
   transition: transform .15s, box-shadow .15s;
 }
 .gallery-card:hover, .gallery-card:focus-visible {
-  transform: translateY(-3px); box-shadow: var(--shadow); outline: none;
+  transform: translateY(-2px); box-shadow: var(--shadow); outline: none;
 }
 .gallery-thumb {
-  height: 130px; display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
+  width: 48px; height: 48px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  position: relative;
 }
-.gallery-img {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-}
-.gallery-icon {
-  width: 52px; height: 52px; object-fit: contain; position: relative; z-index: 1;
-}
-.gallery-info { padding: 12px 14px 14px; }
-.gallery-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 2px; }
-.gallery-name { font-size: 14px; font-weight: 600; }
-.gallery-desc { font-size: 12px; color: var(--ink-2); line-height: 1.45; margin-top: 2px; }
+.gallery-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gallery-icon { width: 30px; height: 30px; object-fit: contain; position: relative; z-index: 1; }
+.gallery-info { flex: 1; min-width: 0; }
+.gallery-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.gallery-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gallery-desc { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
 
 /* ---------- board ---------- */
 .board { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }

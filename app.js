@@ -288,8 +288,7 @@ function overviewHTML() {
             <span class="gallery-name">${esc(p.name)}</span>
             <span class="pill ${p.status === "shipped" ? "mint" : "lav"}" style="font-size:11px;flex-shrink:0">${p.status === "shipped" ? "Shipped" : "In progress"}</span>
           </div>
-          <div class="fine" style="margin:3px 0 7px">${esc(p.category)} · ${esc(p.when)}</div>
-          <div class="gallery-desc">${esc(p.summary.split('.')[0])}</div>
+          <div class="gallery-desc">${esc(p.category)} · ${esc(p.when)}</div>
         </div>
       </button>
     `).join("")}
