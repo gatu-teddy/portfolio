@@ -42,7 +42,7 @@ const DATA = {
       status: "shipped",
       when: "Live — 1,000+ users",
       color: "#3B82F6",
-      summary: "EdTech content platform with an AI tutor, quiz engine and WhatsApp notifications. Adopted as an onboarding and learning tool by two visa agencies and a labour and hiring office. Full zero-to-one product ownership — discovery, build, and go-to-market.",
+      summary: "EdTech content platform with an AI tutor, quiz engine and WhatsApp notifications. Originally built to introduce UAE culture and practices to expats and overseas workers; made the product decision to reposition it as an onboarding tool for company L&D — it was then adopted by two visa agencies and a labour and hiring office. Full zero-to-one ownership: discovery, build, go-to-market, and pivot.",
       stack: ["Next.js", "TypeScript", "Supabase", "Claude API", "Twilio", "Tailwind"],
       live: "#",
       code: "https://github.com/gatu-teddy/tutoriiNew",
