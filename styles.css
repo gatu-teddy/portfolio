@@ -254,3 +254,25 @@ button { font: inherit; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---------- floating skill bubbles ---------- */
+#bubble-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.float-bubble {
+  position: absolute;
+  font-family: "Onest", system-ui, sans-serif;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--mint);
+  color: var(--ink-2);
+  white-space: nowrap;
+  opacity: 0.45;
+  will-change: transform;
+  user-select: none;
+}

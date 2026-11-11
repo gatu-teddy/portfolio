@@ -436,3 +436,90 @@ window.addEventListener("resize", () => {
 initStatic();
 setView("projects");
 setSkillTab(skillTab);
+
+/* ---------- floating skill bubbles ---------- */
+function initSkillBubbles() {
+  if (typeof gsap === "undefined") return;
+
+  const all = [
+    ...DATA.skills["Product"],
+    ...DATA.skills["Engineering"],
+    ...DATA.skills["Tools & Platforms"],
+  ];
+
+  const layer = document.createElement("div");
+  layer.id = "bubble-layer";
+  document.body.appendChild(layer);
+
+  const bubbles = all.map((skill) => {
+    const el = document.createElement("span");
+    el.className = "float-bubble";
+    el.textContent = skill;
+    // scatter across full viewport
+    const lx = 2 + Math.random() * 90;
+    const ly = 2 + Math.random() * 90;
+    el.style.left = lx + "vw";
+    el.style.top  = ly + "vh";
+    layer.appendChild(el);
+
+    // random drift
+    const dx = (Math.random() - 0.5) * 70;
+    const dy = (Math.random() - 0.5) * 50;
+    const dur = 3 + Math.random() * 4;
+    const tween = gsap.to(el, {
+      x: dx, y: dy,
+      duration: dur,
+      delay: -Math.random() * dur,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+    });
+    return { el, tween };
+  });
+
+  let fired = false;
+  const target = document.querySelector(".skills-window");
+  if (!target) return;
+
+  const obs = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting && !fired) {
+      fired = true;
+      obs.disconnect();
+      // small delay so user sees it happen
+      setTimeout(() => magnetPull(bubbles, target), 120);
+    }
+  }, { threshold: 0.35 });
+  obs.observe(target);
+}
+
+function magnetPull(bubbles, target) {
+  const tr = target.getBoundingClientRect();
+  const tx = tr.left + tr.width  * 0.5;
+  const ty = tr.top  + tr.height * 0.5;
+
+  bubbles.forEach(({ el, tween }) => {
+    tween.kill();
+    const br = el.getBoundingClientRect();
+    const cx = br.left + br.width  * 0.5;
+    const cy = br.top  + br.height * 0.5;
+    // animate relative to current transform by adding delta
+    gsap.to(el, {
+      x: "+=" + (tx - cx),
+      y: "+=" + (ty - cy),
+      scale: 0,
+      opacity: 0,
+      duration: 0.42,
+      ease: "power4.in",
+      onComplete: () => { el.remove(); },
+    });
+  });
+
+  // subtle pulse on skills card
+  gsap.fromTo(target,
+    { scale: 1 },
+    { scale: 1.025, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out", delay: 0.38 }
+  );
+}
+
+// run after first paint so layout is settled
+requestAnimationFrame(initSkillBubbles);
