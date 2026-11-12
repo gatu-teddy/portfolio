@@ -290,7 +290,7 @@ function overviewHTML() {
       <button class="gallery-card" data-project="${i}">
         <div class="gallery-thumb" style="background:${esc(p.color)}">
           ${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" class="gallery-img">` : ""}
-          ${p.icon ? `<img src="${esc(p.icon)}" alt="" class="gallery-icon">` : ""}
+          ${p.logo ? `<img src="${esc(p.logo)}" alt="${esc(p.name)}" class="gallery-logo-fill">` : p.icon ? `<img src="${esc(p.icon)}" alt="" class="gallery-icon">` : ""}
         </div>
         <div class="gallery-info">
           <div class="gallery-row">
