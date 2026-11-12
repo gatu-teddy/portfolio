@@ -73,7 +73,7 @@ button { font: inherit; cursor: pointer; }
   max-width: 1240px; margin: 0 auto; padding: 8px 24px 80px;
   display: grid; grid-template-columns: minmax(0, 1fr);
   gap: 20px; align-items: stretch; scroll-margin-top: 24px;
-  transition: grid-template-columns 0.5s cubic-bezier(0.4,0,0.2,1);
+  transition: grid-template-columns 0.5s ease-in;
 }
 .stage.split {
   grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
@@ -299,7 +299,7 @@ header, main, footer { position: relative; z-index: 1; }
   background: var(--mint);
   color: var(--ink-2);
   white-space: nowrap;
-  opacity: 0.45;
+  opacity: 0.18;
   will-change: transform;
   user-select: none;
 }

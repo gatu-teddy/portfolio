@@ -555,7 +555,7 @@ function reverseToHero(bubbles) {
   bubbles.forEach((b) => {
     b.tween && b.tween.kill();
     gsap.to(b.el, {
-      x: 0, y: 0, scale: 1, opacity: 0.45,
+      x: 0, y: 0, scale: 1, opacity: 0.18,
       duration: 0.55, ease: "power2.out",
       onComplete: () => { b.tween = startDrift(b); },
     });
