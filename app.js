@@ -65,7 +65,7 @@ const DATA = {
       category: "Analytics",
       status: "progress",
       when: "Live — growing traffic",
-      color: "#F4F0FF",
+      color: "#ffffff",
       icon: "jobpeak-icon.png",
       logo: "jobpeak-logo.svg",
       summary: "Job market analytics platform giving candidates and recruiters real-time insight into hiring trends, role demand, and salary signals across industries and locations.",
