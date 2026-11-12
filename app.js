@@ -252,26 +252,20 @@ function initStatic() {
 /* ---------- navigation ---------- */
 function setView(view, tab) {
   state = { view, tab: tab || VIEWS[view].tabs[0] };
-  document.querySelectorAll(".segmented button").forEach((b) => b.setAttribute("aria-selected", b.dataset.view === view));
-  $("#view-title").textContent = VIEWS[view].title;
-  $("#subtabs").innerHTML = VIEWS[view].tabs
-    .map((t) => `<button class="${t === state.tab ? "active" : ""}" data-tab="${esc(t)}">${esc(t)}</button>`)
-    .join("");
+  document.querySelectorAll(".segmented button[data-view]").forEach((b) => b.setAttribute("aria-selected", b.dataset.view === view));
   render();
 }
 
 function render() {
-  const el = $("#view");
+  const el = $("#main-content");
+  if (!el) return;
   el.style.animation = "none"; void el.offsetWidth; el.style.animation = "";
   const { view, tab } = state;
-  if (view === "projects") el.innerHTML = tab === "Overview" ? overviewHTML() : projectListHTML(tab);
-  if (view === "experience") el.innerHTML = tableHTML(tab === "Education" ? DATA.education : DATA.experience);
-  // apply logo-only grid until layout splits
-  if (!document.querySelector(".stage.split") && view === "projects" && tab === "Overview") {
-    requestAnimationFrame(() => {
-      const g = document.querySelector(".gallery");
-      if (g) g.classList.add("logo-only");
-    });
+  if (view === "projects") el.innerHTML = projectCardsHTML();
+  if (view === "experience") {
+    el.innerHTML = `<div class="exp-subtabs subtabs">
+      ${VIEWS.experience.tabs.map((t) => `<button class="exp-tab ${t === tab ? "active" : ""}" data-tab="${esc(t)}">${esc(t)}</button>`).join("")}
+    </div>${tableHTML(tab === "Education" ? DATA.education : DATA.experience)}`;
   }
 }
 
@@ -300,6 +294,34 @@ function overviewHTML() {
           <div class="gallery-desc">${esc(p.category)} · ${esc(p.when)}</div>
         </div>
       </button>
+    `).join("")}
+  </div>`;
+}
+
+function projectCardsHTML() {
+  return `<div class="proj-list">
+    ${DATA.projects.map((p) => `
+      <div class="proj-card">
+        <div class="proj-banner" style="background:${esc(p.color)}">
+          ${p.logo ? `<img src="${esc(p.logo)}" alt="${esc(p.name)}" class="proj-banner-logo">` :
+            p.icon ? `<img src="${esc(p.icon)}" alt="" class="proj-banner-icon">` : ""}
+        </div>
+        <div class="proj-body">
+          <div class="proj-title-row">
+            <div>
+              <h3>${esc(p.name)}</h3>
+              <span class="proj-meta">${esc(p.category)} · ${esc(p.when)}</span>
+            </div>
+            <span class="pill ${p.status === "shipped" ? "mint" : "lav"}">${p.status === "shipped" ? "Shipped" : "In progress"}</span>
+          </div>
+          <p class="proj-summary">${esc(p.summary)}</p>
+          <div class="chips">${p.stack.map((s) => `<span class="tag chip">${esc(s)}</span>`).join("")}</div>
+          ${(p.live !== "#" || p.code !== "#") ? `<div class="proj-links">
+            ${p.live !== "#" ? `<a class="btn" href="${esc(p.live)}" target="_blank" rel="noopener">Live site ↗</a>` : ""}
+            ${p.code !== "#" ? `<a class="btn" href="${esc(p.code)}" target="_blank" rel="noopener">Code ↗</a>` : ""}
+          </div>` : ""}
+        </div>
+      </div>
     `).join("")}
   </div>`;
 }
@@ -429,10 +451,8 @@ document.addEventListener("click", (e) => {
   if (seg) return setView(seg.dataset.view);
   const sk = e.target.closest("[data-skill]");
   if (sk) return setSkillTab(sk.dataset.skill);
-  const sub = e.target.closest("#subtabs button");
+  const sub = e.target.closest(".exp-tab[data-tab]");
   if (sub) return setView(state.view, sub.dataset.tab);
-  const task = e.target.closest("[data-project]");
-  if (task) return openDrawer(DATA.projects[+task.dataset.project]);
   if (e.target.closest("#drawer-close") || e.target.id === "scrim") closeDrawer();
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
