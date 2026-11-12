@@ -507,13 +507,22 @@ function activateSplit(bubbles) {
   const stage     = document.querySelector(".stage");
   const skillsCol = document.querySelector(".stage-col.skills-col");
   const skillsWin = document.querySelector(".skills-window");
+  const viewEl    = document.querySelector("#view");
 
   skillsCol.style.opacity = "0";
   skillsCol.style.transition = "opacity 0.5s ease";
   stage.classList.add("split");
-  render(); // drop logo-only → full gallery
 
-  setTimeout(() => { skillsCol.style.opacity = "1"; }, 300);
+  // fade out logo grid, then re-render (CSS fade animation handles fade-in)
+  viewEl.style.transition = "opacity 0.2s ease";
+  viewEl.style.opacity = "0";
+  setTimeout(() => {
+    viewEl.style.transition = "";
+    viewEl.style.opacity = "";
+    render();
+  }, 200);
+
+  setTimeout(() => { skillsCol.style.opacity = "1"; }, 400);
 
   setTimeout(() => {
     if (!skillsWin) return;
@@ -544,12 +553,16 @@ function reverseToHero(bubbles) {
   const skillsCol = document.querySelector(".stage-col.skills-col");
 
   skillsCol.style.opacity = "0";
+
+  const viewEl = document.querySelector("#view");
+  viewEl.style.transition = "opacity 0.2s ease";
+  viewEl.style.opacity = "0";
+
   setTimeout(() => {
     stage.classList.remove("split");
-    requestAnimationFrame(() => {
-      const g = document.querySelector(".gallery");
-      if (g) g.classList.add("logo-only");
-    });
+    viewEl.style.transition = "";
+    viewEl.style.opacity = "";
+    render(); // re-renders with logo-only since .split is gone
   }, 400);
 
   bubbles.forEach((b) => {
