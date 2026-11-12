@@ -444,7 +444,7 @@ initStatic();
 setView("projects");
 setSkillTab(skillTab);
 
-/* ---------- floating skill bubbles + layout transition ---------- */
+/* ---------- floating skill bubbles + reversible layout ---------- */
 function initSkillBubbles() {
   if (typeof gsap === "undefined") return;
 
@@ -456,7 +456,7 @@ function initSkillBubbles() {
 
   const layer = document.createElement("div");
   layer.id = "bubble-layer";
-  document.body.appendChild(layer);
+  document.body.prepend(layer); // first in DOM = behind all content
 
   const bubbles = all.map((skill) => {
     const el = document.createElement("span");
@@ -466,31 +466,39 @@ function initSkillBubbles() {
     el.style.top  = (2 + Math.random() * 90) + "vh";
     layer.appendChild(el);
 
-    const dur = 3 + Math.random() * 4;
-    const tween = gsap.to(el, {
-      x: (Math.random() - 0.5) * 70,
-      y: (Math.random() - 0.5) * 50,
-      duration: dur,
-      delay: -Math.random() * dur,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
-    return { el, tween };
+    const b = {
+      el,
+      driftX: (Math.random() - 0.5) * 70,
+      driftY: (Math.random() - 0.5) * 50,
+      dur:    3 + Math.random() * 4,
+      tween:  null,
+    };
+    b.tween = startDrift(b);
+    return b;
   });
 
-  let fired = false;
+  let splitActive = false;
   const hero = document.querySelector(".hero");
   if (!hero) return;
 
-  const obs = new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting && !fired) {
-      fired = true;
-      obs.disconnect();
+  new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting && !splitActive) {
+      splitActive = true;
       activateSplit(bubbles);
+    } else if (entry.isIntersecting && splitActive) {
+      splitActive = false;
+      reverseToHero(bubbles);
     }
-  }, { threshold: 0 });
-  obs.observe(hero);
+  }, { threshold: 0 }).observe(hero);
+}
+
+function startDrift(b) {
+  return gsap.to(b.el, {
+    x: b.driftX, y: b.driftY,
+    duration: b.dur,
+    delay: -Math.random() * b.dur,
+    repeat: -1, yoyo: true, ease: "sine.inOut",
+  });
 }
 
 function activateSplit(bubbles) {
@@ -498,51 +506,58 @@ function activateSplit(bubbles) {
   const skillsCol = document.querySelector(".stage-col.skills-col");
   const skillsWin = document.querySelector(".skills-window");
 
-  // 1. show skills col invisible
   skillsCol.style.opacity = "0";
   skillsCol.style.transition = "opacity 0.5s ease";
   stage.classList.add("split");
+  render(); // drop logo-only → full gallery
 
-  // 2. switch overview from logo-grid to full list
-  const gallery = document.querySelector(".gallery");
-  if (gallery) {
-    gallery.classList.remove("logo-only");
-    // re-render to get the full gallery animation
-    render();
-  }
+  setTimeout(() => { skillsCol.style.opacity = "1"; }, 300);
 
-  // 3. fade skills col in after grid transitions (500ms)
   setTimeout(() => {
-    skillsCol.style.opacity = "1";
-  }, 300);
-
-  // 4. pull bubbles into the skills window after it's visible
-  setTimeout(() => {
-    const target = skillsWin;
-    if (!target) return;
-    const tr = target.getBoundingClientRect();
+    if (!skillsWin) return;
+    const tr = skillsWin.getBoundingClientRect();
     const tx = tr.left + tr.width  * 0.5;
     const ty = tr.top  + tr.height * 0.5;
 
-    bubbles.forEach(({ el, tween }) => {
-      tween.kill();
-      const br = el.getBoundingClientRect();
-      gsap.to(el, {
+    bubbles.forEach((b) => {
+      b.tween && b.tween.kill();
+      const br = b.el.getBoundingClientRect();
+      gsap.to(b.el, {
         x: "+=" + (tx - (br.left + br.width  * 0.5)),
         y: "+=" + (ty - (br.top  + br.height * 0.5)),
-        scale: 0,
-        opacity: 0,
-        duration: 0.42,
-        ease: "power4.in",
-        onComplete: () => el.remove(),
+        scale: 0, opacity: 0,
+        duration: 0.42, ease: "power4.in",
       });
     });
 
-    gsap.fromTo(target,
+    gsap.fromTo(skillsWin,
       { scale: 1 },
       { scale: 1.025, duration: 0.14, yoyo: true, repeat: 1, ease: "power2.out", delay: 0.38 }
     );
   }, 600);
+}
+
+function reverseToHero(bubbles) {
+  const stage     = document.querySelector(".stage");
+  const skillsCol = document.querySelector(".stage-col.skills-col");
+
+  skillsCol.style.opacity = "0";
+  setTimeout(() => {
+    stage.classList.remove("split");
+    requestAnimationFrame(() => {
+      const g = document.querySelector(".gallery");
+      if (g) g.classList.add("logo-only");
+    });
+  }, 400);
+
+  bubbles.forEach((b) => {
+    b.tween && b.tween.kill();
+    gsap.to(b.el, {
+      x: 0, y: 0, scale: 1, opacity: 0.45,
+      duration: 0.55, ease: "power2.out",
+      onComplete: () => { b.tween = startDrift(b); },
+    });
+  });
 }
 
 requestAnimationFrame(initSkillBubbles);

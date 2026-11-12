@@ -280,6 +280,9 @@ button { font: inherit; cursor: pointer; }
 }
 
 /* ---------- floating skill bubbles ---------- */
+/* elevate all real content above the bubble layer */
+header, main, footer { position: relative; z-index: 1; }
+
 #bubble-layer {
   position: fixed;
   inset: 0;
