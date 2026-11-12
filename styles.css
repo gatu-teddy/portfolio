@@ -72,7 +72,7 @@ button { font: inherit; cursor: pointer; }
 .stage {
   max-width: 1240px; margin: 0 auto; padding: 8px 24px 80px;
   display: grid; grid-template-columns: minmax(0, 1fr);
-  gap: 20px; align-items: stretch; scroll-margin-top: 24px;
+  gap: 20px; align-items: start; scroll-margin-top: 24px;
   transition: grid-template-columns 0.5s ease-in;
 }
 .stage.split {
@@ -227,6 +227,23 @@ button { font: inherit; cursor: pointer; }
 .meter { margin-bottom: 14px; }
 .meter-top { display: flex; justify-content: space-between; font-size: 13px; }
 .meter-top span:last-child { color: var(--muted); }
+
+/* ---------- scroll stack ---------- */
+.scroll-stack-wrap { position: relative; }
+.scroll-stack-sticky {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: visible;
+}
+.scroll-stack-sticky .proj-card {
+  position: absolute;
+  width: min(520px, 92%);
+  max-height: 80vh; overflow-y: auto;
+  will-change: transform;
+  transition: transform 0.18s ease-out, opacity 0.18s ease-out;
+  animation: none;
+}
+.skills-col { position: sticky; top: 20px; }
 
 /* ---------- stage top ---------- */
 .stage-top { margin-bottom: 20px; }

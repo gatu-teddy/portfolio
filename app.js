@@ -261,7 +261,7 @@ function render() {
   if (!el) return;
   el.style.animation = "none"; void el.offsetWidth; el.style.animation = "";
   const { view, tab } = state;
-  if (view === "projects") el.innerHTML = projectCardsHTML();
+  if (view === "projects") { el.innerHTML = projectCardsHTML(); initScrollStack(); }
   if (view === "experience") {
     el.innerHTML = `<div class="exp-subtabs subtabs">
       ${VIEWS.experience.tabs.map((t) => `<button class="exp-tab ${t === tab ? "active" : ""}" data-tab="${esc(t)}">${esc(t)}</button>`).join("")}
@@ -299,31 +299,30 @@ function overviewHTML() {
 }
 
 function projectCardsHTML() {
-  return `<div class="proj-list">
-    ${DATA.projects.map((p) => `
-      <div class="proj-card">
-        <div class="proj-banner" style="background:${esc(p.color)}">
-          ${p.logo ? `<img src="${esc(p.logo)}" alt="${esc(p.name)}" class="proj-banner-logo">` :
-            p.icon ? `<img src="${esc(p.icon)}" alt="" class="proj-banner-icon">` : ""}
-        </div>
-        <div class="proj-body">
-          <div class="proj-title-row">
-            <div>
-              <h3>${esc(p.name)}</h3>
-              <span class="proj-meta">${esc(p.category)} · ${esc(p.when)}</span>
-            </div>
-            <span class="pill ${p.status === "shipped" ? "mint" : "lav"}">${p.status === "shipped" ? "Shipped" : "In progress"}</span>
-          </div>
-          <p class="proj-summary">${esc(p.summary)}</p>
-          <div class="chips">${p.stack.map((s) => `<span class="tag chip">${esc(s)}</span>`).join("")}</div>
-          ${(p.live !== "#" || p.code !== "#") ? `<div class="proj-links">
-            ${p.live !== "#" ? `<a class="btn" href="${esc(p.live)}" target="_blank" rel="noopener">Live site ↗</a>` : ""}
-            ${p.code !== "#" ? `<a class="btn" href="${esc(p.code)}" target="_blank" rel="noopener">Code ↗</a>` : ""}
-          </div>` : ""}
-        </div>
+  const cards = DATA.projects.map((p) => `
+    <div class="proj-card">
+      <div class="proj-banner" style="background:${esc(p.color)}">
+        ${p.logo ? `<img src="${esc(p.logo)}" alt="${esc(p.name)}" class="proj-banner-logo">` :
+          p.icon ? `<img src="${esc(p.icon)}" alt="" class="proj-banner-icon">` : ""}
       </div>
-    `).join("")}
-  </div>`;
+      <div class="proj-body">
+        <div class="proj-title-row">
+          <div>
+            <h3>${esc(p.name)}</h3>
+            <span class="proj-meta">${esc(p.category)} · ${esc(p.when)}</span>
+          </div>
+          <span class="pill ${p.status === "shipped" ? "mint" : "lav"}">${p.status === "shipped" ? "Shipped" : "In progress"}</span>
+        </div>
+        <p class="proj-summary">${esc(p.summary)}</p>
+        <div class="chips">${p.stack.map((s) => `<span class="tag chip">${esc(s)}</span>`).join("")}</div>
+        ${(p.live !== "#" || p.code !== "#") ? `<div class="proj-links">
+          ${p.live !== "#" ? `<a class="btn" href="${esc(p.live)}" target="_blank" rel="noopener">Live site ↗</a>` : ""}
+          ${p.code !== "#" ? `<a class="btn" href="${esc(p.code)}" target="_blank" rel="noopener">Code ↗</a>` : ""}
+        </div>` : ""}
+      </div>
+    </div>
+  `).join("");
+  return `<div class="scroll-stack-wrap"><div class="scroll-stack-sticky">${cards}</div></div>`;
 }
 
 function projectListHTML(cat) {
@@ -465,6 +464,61 @@ window.addEventListener("resize", () => {
 initStatic();
 setView("projects");
 setSkillTab(skillTab);
+
+/* ---------- scroll stack ---------- */
+let _scrollStackCleanup = null;
+function initScrollStack() {
+  if (_scrollStackCleanup) { _scrollStackCleanup(); _scrollStackCleanup = null; }
+  const wrap = document.querySelector(".scroll-stack-wrap");
+  if (!wrap) return;
+  const cards = [...wrap.querySelectorAll(".proj-card")];
+  if (!cards.length) return;
+
+  const STEP = 0.75; // viewport heights per card
+  wrap.style.height = `calc(${cards.length * STEP + 1} * 100vh)`;
+
+  function update() {
+    const scrolled = -wrap.getBoundingClientRect().top;
+    const stepPx = window.innerHeight * STEP;
+    const raw = Math.max(0, scrolled / stepPx);
+
+    cards.forEach((card, i) => {
+      const delta = i - raw; // positive = future, 0 = active, negative = stacked
+
+      let tx = 0, ty = 0, rot = 0, scale = 1, opacity = 1, z = i;
+
+      if (delta >= 1) {
+        // Not yet — hidden below
+        ty = 90; scale = 0.88; opacity = 0; z = i;
+      } else if (delta > 0) {
+        // Entering: slides up as delta 1→0
+        const t = 1 - delta;
+        ty = 90 * (1 - t); scale = 0.88 + 0.12 * t; opacity = t; z = cards.length + i;
+      } else if (delta > -1) {
+        // Just became top — leaving the active position into stack
+        const t = -delta; // 0→1
+        rot = (i % 2 === 0 ? 1 : -1) * t * 5;
+        tx = (i % 2 === 0 ? 1 : -1) * t * 22;
+        ty = -t * 10; scale = 1 - t * 0.05; z = cards.length * 2 - i;
+      } else {
+        // Fully stacked
+        const depth = Math.round(-delta);
+        rot = (i % 2 === 0 ? 1 : -1) * Math.min(depth * 4, 12);
+        tx = (i % 2 === 0 ? 1 : -1) * Math.min(depth * 20, 55);
+        ty = -depth * 10; scale = Math.max(0.8, 1 - depth * 0.05);
+        opacity = Math.max(0, 1 - depth * 0.18); z = cards.length - depth;
+      }
+
+      card.style.transform = `translateY(${ty}px) translateX(${tx}px) rotate(${rot}deg) scale(${scale})`;
+      card.style.opacity = opacity;
+      card.style.zIndex = z;
+    });
+  }
+
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+  _scrollStackCleanup = () => window.removeEventListener("scroll", update);
+}
 
 /* ---------- floating skill bubbles + reversible layout ---------- */
 function initSkillBubbles() {
