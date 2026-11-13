@@ -1,0 +1,310 @@
+/* Dark is the default theme. The light theme below overrides only the colours. */
+:root {
+  color-scheme: dark;
+  --bg: #070c29;
+  --surface: #10163a;
+  --surface-2: #0c1232;
+  --ink: #EFE7DA;
+  --ink-2: #cfc8bd;
+  --muted: #948f99;
+  --line: #232a52;
+  --track: #171e47;
+  --accent: #FF9E0D;
+  /* filled buttons, the text on them, and text on the segmented track */
+  --solid: #FF9E0D;
+  --on-solid: #070c29;
+  --on-track: #EFE7DA;
+  --lav: #232a5c;
+  --peach: #3a2c22;
+  --mint: #33291f;
+  --radius: 14px;
+  --shadow: 0 0 0 1px rgba(239,231,218,.07), 0 10px 30px rgba(0,0,0,.45);
+  --font: var(--font-onest), system-ui, sans-serif;
+  /* the "work moves left, skills card slides in" transition; keep in sync with SLIDE_MS in Stage.tsx */
+  --slide: 800ms;
+  --slide-ease: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #EFE7DA;
+  --surface: #FAF6EE;
+  --surface-2: #F5EFE4;
+  --ink: #070c29;
+  --ink-2: #3b3f57;
+  --muted: #807c80;
+  --line: #e0d6c5;
+  --track: #5d5f74;
+  --solid: #070c29;
+  --on-solid: #EFE7DA;
+  --on-track: #EFE7DA;
+  --lav: #d9d8e0;
+  --peach: #f9dcb4;
+  --mint: #ffe0ad;
+  --shadow: 0 1px 2px rgba(7,12,41,.05), 0 8px 24px rgba(7,12,41,.08);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .3s ease, color .3s ease;
+}
+a { color: inherit; }
+button { font: inherit; cursor: pointer; }
+
+/* real content sits above the floating bubble layer */
+header, main, footer { position: relative; z-index: 1; }
+/* the skills card waits just off the right edge; don't let that add a sideways scrollbar */
+main { overflow-x: clip; }
+
+/* ---------- top bar ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1120px; margin: 0 auto; padding: 20px 24px;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; text-decoration: none; }
+.brand-mark { width: 22px; height: 22px; border-radius: 6px; border: 2.5px solid var(--accent); position: relative; }
+.brand-mark::after { content: ""; position: absolute; inset: 4px; border-radius: 2px; background: var(--accent); }
+.topnav { display: flex; align-items: center; gap: 24px; }
+.topnav a { text-decoration: none; color: var(--ink-2); font-size: 15px; }
+.topnav a:hover { color: var(--ink); }
+.icon-btn {
+  display: grid; place-items: center; width: 44px; height: 44px;
+  background: var(--surface); border-radius: 10px; box-shadow: var(--shadow); color: var(--ink) !important;
+}
+
+/* ---------- theme switch ---------- */
+.theme-switch {
+  position: relative; width: 60px; height: 32px; padding: 0; border: 0; border-radius: 99px;
+  background: var(--track); display: flex; align-items: center; justify-content: space-between;
+  flex: none;
+}
+.theme-switch svg { width: 14px; height: 14px; margin: 0 9px; color: var(--on-track); opacity: .75; }
+.theme-switch::after {
+  content: ""; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--accent);
+  /* dark (the default) parks the thumb over the moon, on the right */
+  transform: translateX(28px); transition: transform .25s ease;
+}
+:root[data-theme="light"] .theme-switch::after { transform: translateX(0); }
+.theme-switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- hero ---------- */
+.hero { text-align: center; padding: 56px 24px 32px; max-width: 900px; margin: 0 auto; }
+.hero h1 {
+  font-size: clamp(36px, 6vw, 64px); line-height: 1.12; font-weight: 500;
+  letter-spacing: -0.02em; margin: 0;
+  animation: rise .7s ease both;
+}
+.sub { color: var(--muted); font-size: clamp(16px, 2vw, 20px); margin: 20px 0 0; animation: rise .7s .1s ease both; }
+
+.segmented {
+  display: inline-flex; gap: 4px; padding: 4px; margin-top: 40px;
+  background: var(--track); border-radius: 12px; scroll-margin-top: 24px;
+  animation: rise .7s .2s ease both;
+}
+.segmented button {
+  border: 0; background: transparent; color: var(--on-track); font-size: 14px; font-weight: 500;
+  padding: 10px 18px; border-radius: 9px; transition: background .2s, color .2s;
+}
+.segmented button:hover { color: var(--on-track); }
+.segmented button[aria-selected="true"] { background: var(--solid); color: var(--on-solid); }
+.segmented.solo span {
+  display: block; padding: 10px 18px; border-radius: 9px;
+  background: var(--solid); color: var(--on-solid); font-size: 14px; font-weight: 500;
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ---------- stage (work section) ---------- */
+/* Always laid out as two columns. Before the hero scrolls away, the work column
+   is shifted right so it sits centred and the skills column is parked off-screen;
+   .split slides both into their real places at the same speed. */
+.stage {
+  max-width: 1240px; margin: 0 auto; padding: 8px 24px 80px;
+  display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  gap: 20px; align-items: start; scroll-margin-top: 24px;
+}
+.stage-col { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.stage-col > .segmented { margin: 0 0 20px; }
+.main-content { width: 100%; }
+
+.stage-top .meta-row { margin-bottom: 14px; }
+/* Projects / Experience switch: stays pinned above the cards instead of scrolling away */
+.view-switch { position: sticky; top: 20px; z-index: 50; }
+
+/* half of (skills column + gap), written relative to the work column's own width */
+.stage-col.skills-col > .segmented { position: absolute; top: 20px; margin: 0; }
+.stage-col.work-col {
+  transform: translateX(calc(100% / 3.5 + 10px));
+  transition: transform var(--slide) var(--slide-ease);
+}
+.stage.split .stage-col.work-col { transform: none; }
+
+/* Pinned for a full screen height so the deck sits level with the project cards:
+   the "Skills" label lines up with the switch, the deck is centred below. */
+.stage-col.skills-col {
+  position: sticky; top: 0; height: 100vh; justify-content: center;
+  transform: translateX(calc(100% + 60px));
+  opacity: 0; visibility: hidden;
+  transition: transform var(--slide) var(--slide-ease), opacity var(--slide) var(--slide-ease), visibility 0s var(--slide);
+}
+.stage.split .stage-col.skills-col {
+  transform: none; opacity: 1; visibility: visible;
+  transition: transform var(--slide) var(--slide-ease), opacity var(--slide) var(--slide-ease), visibility 0s;
+}
+
+.meta-row { display: flex; align-items: center; gap: 8px; margin: 14px 0 18px; flex-wrap: wrap; }
+.avatar {
+  width: 28px; height: 28px; border-radius: 8px; background: var(--solid); color: var(--on-solid);
+  display: grid; place-items: center; font-size: 12px; font-weight: 600;
+}
+.pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; color: var(--ink-2); }
+.pill.lav { background: var(--lav); } .pill.peach { background: var(--peach); } .pill.mint { background: var(--mint); }
+
+.subtabs { display: flex; gap: 22px; overflow-x: auto; }
+.subtabs button {
+  border: 0; background: none; padding: 0 0 12px; font-size: 13px; color: var(--muted);
+  border-bottom: 2px solid transparent; white-space: nowrap;
+}
+.subtabs button.active { color: var(--ink); font-weight: 500; border-bottom-color: var(--accent); }
+
+/* ---------- cards ---------- */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
+.fine { font-size: 12px; color: var(--muted); }
+
+/* ---------- experience ---------- */
+.exp-subtabs { margin-bottom: 16px; padding-bottom: 2px; border-bottom: 1px solid var(--line); }
+.table-card { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 0 12px 10px; }
+.table td { padding: 14px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+.table td:first-child { font-weight: 500; }
+.table td.note { color: var(--ink-2); }
+.table td.period { white-space: nowrap; }
+.tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--mint); color: var(--ink-2); margin: 2px 4px 0 0; white-space: nowrap; }
+
+/* ---------- skills ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.chip { font-size: 13px; padding: 7px 14px; margin: 0; }
+
+/* ---------- skills deck ---------- */
+/* every card shares one grid cell, so they are all as tall as the tallest */
+.skills-stack { display: grid; width: 100%; }
+.skill-card {
+  grid-area: 1 / 1;
+  background: var(--surface); border-radius: 18px; padding: 14px 22px 24px;
+  box-shadow: var(--shadow), 0 -1px 0 var(--line);
+  transform-origin: top center;
+  will-change: transform;
+  /* slower than the project cards: there are only three of these */
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease-out;
+}
+.skill-card h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.skill-card h3 button {
+  border: 0; background: none; padding: 0; color: inherit; font-weight: inherit;
+  width: 100%; text-align: left; line-height: 20px;
+}
+.skill-card .chips { margin-top: 20px; }
+/* blank deck: chips keep their place but stay invisible until the bubbles land */
+.skill-card .chip, .skill-card .fine { transition: opacity .25s ease; }
+.skills-stack.blank .chip, .skills-stack.blank .fine { opacity: 0; }
+
+/* ---------- scroll stack ---------- */
+.scroll-stack-wrap { position: relative; width: 100%; }
+.scroll-stack-sticky {
+  position: sticky; top: 0; height: 100vh; width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: visible;
+}
+.scroll-stack-sticky .proj-card {
+  position: absolute;
+  width: min(520px, 92%);
+  max-height: 80vh; overflow-y: auto;
+  will-change: transform;
+  transition: transform 0.18s ease-out, opacity 0.18s ease-out;
+}
+
+/* ---------- project cards ---------- */
+.proj-card {
+  background: var(--surface); border-radius: 18px; box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.proj-banner {
+  height: 140px; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
+}
+.proj-banner-logo { max-width: 55%; max-height: 65%; object-fit: contain; }
+.proj-banner-icon { width: 52px; height: 52px; object-fit: contain; }
+.proj-body { padding: 20px 24px 24px; }
+.proj-title-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12px; margin-bottom: 8px;
+}
+.proj-card h3 { font-size: 17px; font-weight: 600; margin: 0 0 2px; }
+.proj-meta { font-size: 12px; color: var(--muted); }
+.proj-summary { font-size: 14px; color: var(--ink-2); line-height: 1.6; margin: 10px 0 14px; }
+.proj-links { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+
+/* ---------- contact / footer ---------- */
+.contact { text-align: center; padding: 40px 24px 80px; }
+.contact h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 500; letter-spacing: -0.02em; margin: 0; }
+.contact-actions { display: flex; justify-content: center; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+.btn {
+  text-decoration: none; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
+  background: var(--surface); box-shadow: var(--shadow); transition: transform .15s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn.primary { background: var(--solid); color: var(--on-solid); }
+.footer { text-align: center; padding: 24px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+
+/* ---------- floating skill bubbles ---------- */
+/* sits behind the first screen and scrolls away with it */
+.bubble-layer {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+/* while the bubbles fly into (or back out of) the skills card: in front of the page, unclipped */
+.bubble-layer.lifted { z-index: 2; overflow: visible; }
+/* held still on screen during the flight in; SkillBubbles sets `top` to where the layer was */
+.bubble-layer.pinned { position: fixed; }
+.float-bubble {
+  position: absolute;
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: var(--mint);
+  color: var(--ink-2);
+  white-space: nowrap;
+  opacity: 0.48;
+  will-change: translate, scale, opacity;
+  user-select: none;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 960px) {
+  /* one column: the skills panel drops below the project stack */
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .stage-col.work-col { transform: none; }
+  .stage-col.skills-col { position: static; height: auto; transform: translateY(16px); }
+  .stage-col.skills-col > .segmented { position: static; margin: 0 0 20px; }
+}
+@media (max-width: 860px) {
+  .topnav a:not(.icon-btn) { display: none; }
+}
+@media (max-width: 560px) {
+  .segmented button { padding: 9px 12px; }
+  .table th:nth-child(3), .table td:nth-child(3) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
