@@ -211,9 +211,9 @@ main { overflow-x: clip; }
   width: 100%; text-align: left; line-height: 20px;
 }
 .skill-card .chips { margin-top: 20px; }
-/* blank deck: chips keep their place but stay invisible until the bubbles land */
+/* blank card: chips keep their place but stay invisible until its bubbles land */
 .skill-card .chip, .skill-card .fine { transition: opacity .25s ease; }
-.skills-stack.blank .chip, .skills-stack.blank .fine { opacity: 0; }
+.skill-card.blank .chip, .skill-card.blank .fine { opacity: 0; }
 
 /* ---------- scroll stack ---------- */
 .scroll-stack-wrap { position: relative; width: 100%; }
@@ -264,20 +264,19 @@ main { overflow-x: clip; }
 .footer { text-align: center; padding: 24px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
 
 /* ---------- floating skill bubbles ---------- */
-/* sits behind the first screen and scrolls away with it */
+/* fills the screen and stays put while the page scrolls; sits behind the page content */
 .bubble-layer {
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 100vh;
+  position: fixed;
+  inset: 0;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
 }
-/* while the bubbles fly into (or back out of) the skills card: in front of the page, unclipped */
-.bubble-layer.lifted { z-index: 2; overflow: visible; }
-/* held still on screen during the flight in; SkillBubbles sets `top` to where the layer was */
-.bubble-layer.pinned { position: fixed; }
+/* bubbles move here while they fly into (or back out of) a skills card: in front of the page */
+.bubble-layer.front { z-index: 2; }
 .float-bubble {
   position: absolute;
+  left: 0; top: 0;
   font-family: var(--font);
   font-size: 11px;
   padding: 3px 10px;

@@ -11,6 +11,8 @@ import SkillBubbles from "./SkillBubbles";
 // Keep in sync with --slide in globals.css.
 const SLIDE_MS = 800;
 
+const GROUPS = Object.keys(DATA.skills);
+
 type View = "projects" | "experience";
 const VIEWS: { id: View; label: string }[] = [
   { id: "projects", label: "Projects" },
@@ -22,8 +24,10 @@ export default function Stage() {
   // split: the hero has scrolled off screen, so the work column moves left
   // and the skills card slides in from the right.
   const [split, setSplit] = useState(false);
-  // filled: the background skills have landed in the card.
-  const [filled, setFilled] = useState(false);
+  // active: which skills card is in front. Its group, and the ones before it, are called in.
+  const [active, setActive] = useState(0);
+  // filled[g]: group g's floating skills have landed in its card.
+  const [filled, setFilled] = useState<boolean[]>(() => GROUPS.map(() => false));
   const skillsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,7 +36,6 @@ export default function Stage() {
     const io = new IntersectionObserver(
       ([entry]) => {
         setSplit(!entry.isIntersecting);
-        if (entry.isIntersecting) setFilled(false); // card goes blank again as the skills float back out
       },
       { threshold: 0 }
     );
@@ -40,7 +43,10 @@ export default function Stage() {
     return () => io.disconnect();
   }, []);
 
-  const handleLanded = useCallback(() => setFilled(true), []);
+  const setGroup = (g: number, on: boolean) => setFilled((f) => f.map((v, i) => (i === g ? on : v)));
+  const handleLanded = useCallback((g: number) => setGroup(g, true), []);
+  // a card goes blank again as its skills float back out
+  const handleReleased = useCallback((g: number) => setGroup(g, false), []);
 
   return (
     <section className={split ? "stage split" : "stage"} id="work">
@@ -68,10 +74,16 @@ export default function Stage() {
         <div className="segmented solo">
           <span>Skills</span>
         </div>
-        <SkillsStack ref={skillsRef} filled={filled} scrollDriven={view === "projects"} />
+        <SkillsStack ref={skillsRef} filled={filled} scrollDriven={view === "projects"} onActiveChange={setActive} />
       </div>
 
-      <SkillBubbles pulled={split} delay={SLIDE_MS} targetRef={skillsRef} onLanded={handleLanded} />
+      <SkillBubbles
+        pulledCount={split ? active + 1 : 0}
+        firstDelay={SLIDE_MS}
+        targetRef={skillsRef}
+        onLanded={handleLanded}
+        onReleased={handleReleased}
+      />
     </section>
   );
 }

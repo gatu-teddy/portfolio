@@ -39,25 +39,34 @@ function cardStyle(i: number, raw: number): CSSProperties {
  * a slow glide. Otherwise (Experience view, or phones where it sits below everything)
  * it advances when a card's title is clicked.
  *
- * While `filled` is false the cards are blank, waiting for the background
- * bubbles to fly in (SkillBubbles finds chips by data-skill inside the
- * data-active card).
+ * A card stays blank until `filled[i]` is true, waiting for its group's floating
+ * bubbles to fly in (SkillBubbles finds the card by data-group and its chips by
+ * data-skill). `onActiveChange` reports which card is in front.
  */
 export default function SkillsStack({
   ref,
   filled,
   scrollDriven,
+  onActiveChange,
 }: {
   ref: Ref<HTMLDivElement>;
-  filled: boolean;
+  filled: boolean[];
   scrollDriven: boolean;
+  onActiveChange: (active: number) => void;
 }) {
+  const activeRef = useRef(0);
+  const onActiveChangeRef = useRef(onActiveChange);
+  useEffect(() => { onActiveChangeRef.current = onActiveChange; });
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [manual, setManual] = useState(0);
   const lastIndex = GROUPS.length - 1;
 
   const apply = useCallback((raw: number) => {
     const active = Math.round(raw);
+    if (active !== activeRef.current) {
+      activeRef.current = active;
+      onActiveChangeRef.current(active);
+    }
     cardRefs.current.forEach((card, i) => {
       if (!card) return;
       const s = cardStyle(i, raw);
@@ -110,14 +119,15 @@ export default function SkillsStack({
 
   return (
     <div
-      className={filled ? "skills-stack" : "skills-stack blank"}
+      className="skills-stack"
       ref={ref}
       style={{ paddingBottom: lastIndex * PEEK }}
     >
       {GROUPS.map(([group, list], i) => (
         <div
           key={group}
-          className="skill-card"
+          className={filled[i] ? "skill-card" : "skill-card blank"}
+          data-group={i}
           data-active={i === 0}
           style={cardStyle(i, 0)}
           ref={(el) => { cardRefs.current[i] = el; }}
